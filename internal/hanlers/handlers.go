@@ -5,13 +5,18 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
+
+	authgrpc "realtime_chat_app/internal/clients/auth/grpc"
 )
 
 type Handler struct {
+	client *authgrpc.Client
 }
 
-func MustHandler() *Handler {
-	return &Handler{}
+func MustHandler(client *authgrpc.Client) *Handler {
+	return &Handler{
+		client: client,
+	}
 }
 
 func (h *Handler) InitRoutes() (*mux.Router, error) {
@@ -25,7 +30,8 @@ func (h *Handler) InitRoutes() (*mux.Router, error) {
 
 		fm := router.PathPrefix("/fm").Subrouter()
 		fm.PathPrefix("/files/").Handler(http.StripPrefix("/fm/files/", http.FileServer(http.Dir(dir))))
-		fm.HandleFunc("/chats", GetUserChats).Methods("GET")
+
+		fm.HandleFunc("/chats", h.GetUserChats).Methods("GET")
 
 		id := fm.PathPrefix("/chats/{id}").Subrouter()
 		{
