@@ -1,6 +1,12 @@
 package hanlers
 
-import "net/http"
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"realtime_chat_app"
+	"realtime_chat_app/internal/transform"
+)
 
 func GetMainPage(w http.ResponseWriter, r *http.Request) {
 	const op = "internal.handlers.chat.GetMainPage"
@@ -9,8 +15,17 @@ func GetMainPage(w http.ResponseWriter, r *http.Request) {
 	//w.Write([]byte("/api"))
 }
 
-func GetUserChats(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetUserChats(w http.ResponseWriter, r *http.Request) {
 	const op = "internal.handlers.chat.GetUserChats"
+	var user realtime_chat_app.User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return
+	}
+
+	h.client.Auth(context.Background(), transform.UserTransform(user))
+
 	w.Write([]byte("/api/chats"))
 }
 
