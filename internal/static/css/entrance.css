@@ -1,0 +1,18 @@
+.text {
+  font-size: 14px;
+  margin-left: 35px;
+  font-weight: 500;
+}
+
+.title {
+  padding: 10px 0 0px 121px;
+}
+
+
+.err {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+  bottom: -15px;
+}
